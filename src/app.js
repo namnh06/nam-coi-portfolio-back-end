@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const mongoose = require('mongoose');
 import {
   ApolloServer
@@ -9,9 +10,9 @@ import resolvers from './graphql/resolvers';
 import bodyParser from 'body-parser';
 
 const app = express();
-
+app.use(cors());
 app.use(bodyParser.urlencoded({
-  extended: false
+  extended: true
 }));
 app.use(bodyParser.json());
 
@@ -24,12 +25,13 @@ server.applyMiddleware({
   app
 });
 
-
-
 mongoose.connect(
     'mongodb://localhost:27017/users', {
       useNewUrlParser: true
     }).then(result => {
-    app.listen(3003);
+    console.log('MongoDB is connecting');
+    app.listen(3004, () => {
+      console.log('Express is running');
+    });
   })
   .catch(err => console.log(err));

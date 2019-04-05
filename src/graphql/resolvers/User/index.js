@@ -33,10 +33,11 @@ export default {
   },
   Mutation: {
     createUser: async (obj, args) => {
-      const hashedPw = await bcrypt.hash(args.user.password, 12);
+      console.log(args);
+      const hashedPw = await bcrypt.hash(args.CreateUserInput.password, 12);
       const newUser = await new User({
-        name: args.user.name,
-        email: args.user.email,
+        name: args.CreateUserInput.name,
+        email: args.CreateUserInput.email,
         password: hashedPw
       });
       const createdUser = await newUser.save();
