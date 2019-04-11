@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const auth = require('./middleware/auth');
 import {
   ApolloServer
 } from 'apollo-server-express';
@@ -16,14 +17,46 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'OPTIONS, GET, POST, PUT, PATCH, DELETE ');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
+app.use(auth);
+
 const server = new ApolloServer({
   typeDefs,
-  resolvers
+  resolvers,
+  context: ({
+    req
+  }) => {
+    return req;
+  },
+  formatError: error => {
+    console.log(error);
+    const detail = error.message || 'An error occurred.';
+    const title = error.extensions.code;
+    const status = error.extensions.exception.code || 500;
+    return {
+      detail,
+      title,
+      status
+    }
+  }
 });
 
 server.applyMiddleware({
   app
 });
+
+
 
 mongoose.connect(
     'mongodb://localhost:27017/users', {

@@ -1,6 +1,9 @@
 import User from '../../../models/User';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import {
+  AuthenticationError
+} from 'apollo-server-core';
 
 export default {
   Query: {
@@ -33,6 +36,20 @@ export default {
         token: token,
         userId: user._id.toString()
       }
+    }
+  },
+  Mutation: {
+    signOut: async (parent, args, context, info) => {
+      if (!context.isAuth) {
+        const error = new AuthenticationError('Not Authenticated !');
+        error.code = 401;
+        throw error;
+      }
+      return 'ok';
+      // if (!req.isAuth) {
+      //   return 'error';
+      // }
+      // return 'ok';
     }
   }
 }

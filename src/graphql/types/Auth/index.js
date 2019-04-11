@@ -10,4 +10,7 @@ type AuthData{
 type Query {
   login(email: String!, password: String!): AuthData!
 }
+type Mutation {
+  signOut(token: String!): String!
+}
 `;
