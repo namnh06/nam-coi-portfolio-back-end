@@ -3,9 +3,9 @@ import {
 } from "merge-graphql-schemas";
 
 import User from './User';
-import Test from './Test';
+
 import Auth from './Auth'
 
-const resolvers = [User, Test, Auth]
+const resolvers = [User, Auth]
 
 export default resolvers;

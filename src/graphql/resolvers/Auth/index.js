@@ -1,9 +1,14 @@
 import User from '../../../models/User';
+import ResetPassword from '../../../models/ResetPassword';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import {
-  AuthenticationError
-} from 'apollo-server-core';
+  transporter
+} from '../../../helper/email';
+const uuid = require('uuid/v5');
+
+import moment from 'moment';
+
 
 export default {
   Query: {
@@ -36,6 +41,37 @@ export default {
         token: token,
         userId: user._id.toString()
       }
+    },
+    requestResetPassword: async (obj, args) => {
+      const email = args.email;
+      const oldResetPassword = await ResetPassword.findOne({
+        email
+      });
+      if (!!oldResetPassword) {
+        const token = uuid(email, uuid.DNS);
+        const updateResetPassword = await oldResetPassword.updateOne({
+          token,
+          created_at: moment()
+        });
+
+        return 'updated';
+      }
+
+      const token = uuid(email, uuid.URL);
+      const resetPassword = await new ResetPassword({
+        email,
+        token,
+        created_at: moment()
+      })
+      const resetPasswordSaved = resetPassword.save();
+      // transporter.sendMail({
+      //   to: email,
+      //   from: 'no-reply@namcoi.com',
+      //   subject: 'Request Reset Password',
+      //   html: ''
+      // })
+      // console.log(email);
+      return 'ok';
     }
   },
   Mutation: {

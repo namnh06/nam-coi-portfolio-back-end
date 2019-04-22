@@ -6,7 +6,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch-node": "nodemon src/app.js",
     "watch": "npm run watch-node",
-    "server": "nodemon --exec babel-node src/app.js"
+    "server": "nodemon --exec babel-node src/app.js",
+    "tsc": "tsc"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +20,7 @@
     "nodemon": "^1.18.10"
   },
   "dependencies": {
+    "@types/express": "^4.16.1",
     "apollo-server-express": "^2.4.8",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
@@ -30,6 +32,10 @@
     "jsonwebtoken": "^8.5.1",
     "merge-graphql-schemas": "^1.5.8",
     "moment": "^2.24.0",
-    "mongoose": "^5.4.21"
+    "mongoose": "^5.4.21",
+    "nodemailer": "^6.1.0",
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "typescript": "^3.4.4",
+    "uuid": "^3.3.2"
   }
 }
