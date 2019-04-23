@@ -1,50 +1,53 @@
 import bcrypt from 'bcryptjs';
 import User from '../../../models/User';
-import {
-  transporter
-} from '../../../helper/email';
-// const nodemailer = require('nodemailer');
-// const sendgridTransport = require('nodemailer-sendgrid-transport');
-
-// const transporter = nodemailer.createTransport(sendgridTransport({
-//   auth: {
-//     api_key: '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'
-//   }
-// }))
+import { transporter } from '../../../helper/email';
+import { IUser } from '../../../utilities/IUser';
 
 export default {
   Query: {
     testUser: () => {
       return 'test user';
     },
-    user: (obj, args) => {
+    user: (obj: any, args: any) => {
       return new Promise((resolve, reject) => {
-        User.findOne(args).exec((err, res) => {
+        User.findOne(args).exec((err: any, res: any) => {
           err ? reject(err) : resolve(res);
-        })
-      })
+        });
+      });
     },
     users: () => {
       return new Promise((resolve, reject) => {
         User.find({})
           .populate()
-          .exec((err, res) => {
+          .exec((err: any, res: any) => {
             err ? reject(err) : resolve(res);
-          })
-      })
+          });
+      });
     },
     truncateUsersTable: () => {
       return new Promise((resolve, reject) => {
-        User.deleteMany({})
-          .exec((err, res) => {
-            err ? reject('error') : resolve('ok')
-          })
-      })
+        User.deleteMany({}).exec((err: any, res: any) => {
+          err ? reject('error') : resolve('ok');
+        });
+      });
     }
   },
   Mutation: {
-    createUser: async (obj, args) => {
+    createUser: async (obj: any, args: any) => {
       const email = args.CreateUserInput.email;
+      const user: IUser = await User.where({ email }).findOne(
+        (err: any, user: IUser) => {
+          if (err) console.log(err);
+          else return user;
+        }
+      );
+
+      if (!!user) {
+        return {
+          ...user._doc
+        };
+      }
+
       const hashedPw = await bcrypt.hash(args.CreateUserInput.password, 12);
       const newUser = await new User({
         name: args.CreateUserInput.name,
@@ -61,7 +64,7 @@ export default {
       return {
         ...createdUser._doc,
         _id: createdUser._id.toString()
-      }
+      };
     }
   }
-}
+};

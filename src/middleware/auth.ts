@@ -1,6 +1,8 @@
-const jwt = require('jsonwebtoken');
-const moment = require('moment');
-module.exports = (req, res, next) => {
+import jwt from 'jsonwebtoken';
+import moment from 'moment';
+import { Request, Response, NextFunction } from 'express';
+
+const auth = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.get('Authorization');
 
   if (!authHeader) {
@@ -8,15 +10,14 @@ module.exports = (req, res, next) => {
     return next();
   }
 
-
   const token = authHeader.split(' ')[1];
+  interface Token {
+    userId: string;
+  }
 
-  let decodedToken;
-
+  let decodedToken: Token | undefined;
   try {
-
-    decodedToken = jwt.verify(token, 'axon.active');
-
+    const decodedToken = jwt.verify(token, 'axon.active');
   } catch (error) {
     req.isAuth = false;
     return next();
@@ -28,5 +29,7 @@ module.exports = (req, res, next) => {
 
   req.userId = decodedToken.userId;
   req.isAuth = true;
+
   return next();
-}
+};
+export default auth;

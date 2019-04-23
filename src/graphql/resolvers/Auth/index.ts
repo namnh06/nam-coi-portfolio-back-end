@@ -2,23 +2,21 @@ import User from '../../../models/User';
 import ResetPassword from '../../../models/ResetPassword';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import {
-  transporter
-} from '../../../helper/email';
+import { transporter } from '../../../helper/email';
 const uuid = require('uuid/v5');
 
 import moment from 'moment';
-
+import { AuthenticationError } from 'apollo-server-core';
 
 export default {
   Query: {
-    login: async (obj, args) => {
+    login: async (obj: any, args: any) => {
       const user = await User.findOne({
         email: args.email
       });
 
       if (!user) {
-        const error = new Error('User Not Found.');
+        const error: any = new Error('User Not Found.');
         error.code = 401;
         throw error;
       }
@@ -26,23 +24,27 @@ export default {
       const isEqual = await bcrypt.compare(args.password, user.password);
 
       if (!isEqual) {
-        const error = new Error('Password is in correct');
+        const error: any = new Error('Password is in correct');
         error.code = 401;
         throw error;
       }
-      const token = jwt.sign({
-        userId: user._id.toString(),
-        email: user.email
-      }, 'axon.active', {
-        expiresIn: '1h'
-      });
+      const token = jwt.sign(
+        {
+          userId: user._id.toString(),
+          email: user.email
+        },
+        'axon.active',
+        {
+          expiresIn: '1h'
+        }
+      );
 
       return {
         token: token,
         userId: user._id.toString()
-      }
+      };
     },
-    requestResetPassword: async (obj, args) => {
+    requestResetPassword: async (obj: any, args: any) => {
       const email = args.email;
       const oldResetPassword = await ResetPassword.findOne({
         email
@@ -62,7 +64,7 @@ export default {
         email,
         token,
         created_at: moment()
-      })
+      });
       const resetPasswordSaved = resetPassword.save();
       // transporter.sendMail({
       //   to: email,
@@ -75,9 +77,9 @@ export default {
     }
   },
   Mutation: {
-    signOut: async (parent, args, context, info) => {
+    signOut: async (parent: any, args: any, context: any, info: any) => {
       if (!context.isAuth) {
-        const error = new AuthenticationError('Not Authenticated !');
+        const error: any = new AuthenticationError('Not Authenticated !');
         error.code = 401;
         throw error;
       }
@@ -88,4 +90,4 @@ export default {
       // return 'ok';
     }
   }
-}
+};
