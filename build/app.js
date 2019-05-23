@@ -16,8 +16,6 @@ var App = /** @class */ (function () {
     }
     App.prototype.config = function (app) {
         app.use(function (req, res, next) {
-            console.log(process.env.SEND_GRID_API_KEY);
-            console.log('object');
             next();
         });
         app.use(cors_1.default());
@@ -33,6 +31,11 @@ var App = /** @class */ (function () {
                 return res.sendStatus(200);
             }
             next();
+        });
+        app.post('/login', function (req, res, next) {
+            // res.send(req);
+            // console.log(req);
+            res.send('ok');
         });
         app.use(auth_js_1.default);
     };

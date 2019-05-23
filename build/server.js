@@ -34,8 +34,7 @@ mongoose_1.default
 })
     .then(function (result) {
     console.log('MongoDB is connecting');
-    console.log('object');
-    app_1.default.listen(process.env.PORT, function () {
+    app_1.default.listen(process.env.DEV_PORT || 3004, function () {
         console.log('Express is running');
     });
 })

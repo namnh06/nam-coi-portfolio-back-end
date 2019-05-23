@@ -32,8 +32,7 @@ mongoose
   })
   .then(result => {
     console.log('MongoDB is connecting');
-    console.log('object');
-    app.listen(process.env.PORT, () => {
+    app.listen(process.env.DEV_PORT || 3004, () => {
       console.log('Express is running');
     });
   })

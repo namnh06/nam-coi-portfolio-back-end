@@ -14,8 +14,6 @@ class App {
   }
   private config(app: express.Application): void {
     app.use((req, res, next) => {
-      console.log(process.env.SEND_GRID_API_KEY);
-      console.log('object');
       next();
     });
     app.use(cors());
@@ -40,6 +38,12 @@ class App {
         return res.sendStatus(200);
       }
       next();
+    });
+
+    app.post('/login', (req, res, next) => {
+      // res.send(req);
+      // console.log(req);
+      res.send('ok');
     });
 
     app.use(auth);
