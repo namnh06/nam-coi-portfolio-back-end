@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import auth from './middleware/auth.js';
+import auth from './middleware/auth';
 import bodyParser from 'body-parser';
 require('dotenv').config();
 const app = express();
@@ -41,8 +41,6 @@ class App {
     });
 
     app.post('/login', (req, res, next) => {
-      // res.send(req);
-      // console.log(req);
       res.send('ok');
     });
 
